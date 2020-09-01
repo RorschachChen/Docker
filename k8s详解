@@ -1,0 +1,35 @@
+集群管理的系统，最好还要能调度集群的资源
+
+master
+|----apiserver:对外暴露的接口
+|----etcd:保存整个集群的信息
+|----controller manager:负责集群状态的维护
+|----scheduler:资源调度中心。
+
+Slave/Node
+\----kubelet:是与Master节点沟通，同时还负责维护容器在节点上的整个生命周期，还要负责网络、存储等方面的管理工作
+\----kube-prpxy。提供集群内的服务发现和负载均衡
+\----Contrainer Runtime:容器的运行时环境
+
+K8S的设计理念中，我们可以操作的基本单位统一叫作对象（Object）
+K8S的有很多种对象类型，比如Pod，Deployment等。
+采用YAML或者JSON等文本格式，对object作相应的定义即可。
+
+<<<<<Pod>>>>最原子化的对象
+“Pod是一个豆荚，里面装了一个或多个容器。” 除了容器之外，这个豆荚里面还包括存储资源，一个唯一的IP地址等。其内的多个容器共享这些存储资源和IP地址。
+
+<<<<<ReplicaSet>>>>和大规模重复部署
+
+<<<<<Deployment>>>>的本质也是一种Object，它对Pod，RS这些概念做了包装，让用户更容易使用。
+Deployment负责监控这次部署，保证部署的稳定性。还提供快速扩容，滚动更新，回滚等功能。
+
+Service机制负责负载均衡和网络部分。叫作微服务。
+
+选择Pod使用的是K8S的一种叫做Label Selector的机制。
+
+配置网络模式 // TO-DO
+
+ClusterIP：内部分配ip，外部不可访问
+NodePort：把服务在Node节点（集群物理机）上暴露出去。外部可以通过NodeIP:NodePort方式来访问服务
+LoadBalance。负载均衡模式。通过指定一个端口，K8S会我们创建一个服务均衡服务。
+ExternalName。类DNS方式，通过制定一个显示的域名来对外暴露服务。这也要求K8S集群安装了kube-dns这个插件

@@ -1,0 +1,35 @@
+1. 把这个镜像使用docker push命令到一个镜像仓库
+
+2. 接下来，使用YAML语法格式，定义一个Pod。主要包括这个Pod的名字，内部包含的容器信息，比如启动容器使用的镜像，运行的命令等。
+containers:
+\----image：启动容器使用的镜像
+\----command:运行的命令
+
+3. 然后指定kubectl create命令就可创建出一个Pod了。
+具体：kubectl create -f pod.yaml
+
+
+可以使用ip+port的方式调用另一台docker的服务？
+
+首先定义Ddeployment.yaml
+
+使用Service机制对外暴露一个统一且不变的IP和端口。
+编写service_lb.yaml
+apiVersion: v1
+kind: Service
+metadata:
+ name: my-service
+spec:
+ type: LoadBalancer
+ selector:
+   app: back-end
+ ports:
+ - name: http
+   port: 8888 //对外的接口
+   targetPort: 4567 //对内
+
+对service.yaml同样使用kubectl create创建。
+
+
+1. 修改deployment.yaml后利用kubectl apply进行生效
+2. 
